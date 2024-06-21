@@ -32,6 +32,44 @@ void digitarNomeTime(char *nomeTime) {
     scanf("%s", nomeTime);
 }
 
+void gravarCombate(Jogador *jogador, Jogador *inimigo, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "a");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir arquivo para gravar os detalhes do combate.\n");
+        return;
+    }
+
+    fprintf(arquivo, "Combate:\n");
+    for (int i = 0; i < MAX_EQUIPE; i++) {
+        if (jogador->equipe[i].nome[0] != '\0') {
+            fprintf(arquivo, "Jogador: %s, Vida: %d, Ataque: %d\n", jogador->equipe[i].nome, jogador->equipe[i].vida, jogador->equipe[i].ataque);
+        }
+        if (inimigo->equipe[i].nome[0] != '\0') {
+            fprintf(arquivo, "Inimigo: %s, Vida: %d, Ataque: %d\n", inimigo->equipe[i].nome, inimigo->equipe[i].vida, inimigo->equipe[i].ataque);
+        }
+    }
+    fprintf(arquivo, "Número de troféus: %d\n", jogador->trofeus);
+    fprintf(arquivo, "---------------------\n");
+
+    fclose(arquivo);
+}
+
+void lerCombates(const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir arquivo para ler os detalhes dos combates.\n");
+        return;
+    }
+
+    char linha[256];
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        printf("%s", linha);
+    }
+
+    fclose(arquivo);
+}
+
+
 void combate(Jogador *jogador, Jogador *inimigo) {
     tp_fila filaJogador, filaInimigo;
     inicializaFila(&filaJogador);
@@ -102,10 +140,11 @@ void combate(Jogador *jogador, Jogador *inimigo) {
             printf("Venceu na vida!\n");
         }
     }
+
+    gravarCombate(jogador, inimigo, "combates.txt");
 }
 
 int main() {
-    
     tp_pilha pilha;
     inicializarPilha(&pilha);
 
@@ -125,7 +164,6 @@ int main() {
     renovarLoja(loja, &pilha);
     for (int i = 0; i < 3; i++) {
         insere_listad_no_fim(lista, loja[i]);
-
     }
 
     Jogador jogador;
@@ -144,20 +182,18 @@ int main() {
         printf("Ouro do Jogador: %d\n", jogador.ouro);
         printf("Vida do jogador: %d\n", jogador.vidaj);
         printf("Troféus do jogador: %d\n\n", jogador.trofeus);
-            printf("\nTime do jogador:\n");
-            for (int i = 0; i < MAX_EQUIPE; i++) {
-                if (jogador.equipe[i].nome[0] != '\0') {
-                    printf("%d. %s (Vida: %d, Ataque: %d)\n", i + 1, jogador.equipe[i].nome, jogador.equipe[i].vida, jogador.equipe[i].ataque);
-                }
+        printf("\nTime do jogador:\n");
+        for (int i = 0; i < MAX_EQUIPE; i++) {
+            if (jogador.equipe[i].nome[0] != '\0') {
+                printf("%d. %s (Vida: %d, Ataque: %d)\n", i + 1, jogador.equipe[i].nome, jogador.equipe[i].vida, jogador.equipe[i].ataque);
             }
-        
-
+        }
 
         exibirLoja(loja);
 
         int acao;
         do {
-            printf("\n1. Comprar pet\n2. Vender pet\n3. Renovar loja\n4. Ir para combate\nEscolha:");
+            printf("\n1. Comprar pet\n2. Vender pet\n3. Renovar loja\n4. Ir para combate\n5. Ver histórico de combates\nEscolha: ");
             scanf("%d", &acao);
             if (acao == 1) {
                 int indice;
@@ -188,16 +224,14 @@ int main() {
                 } else {
                     printf("Ouro insuficiente.\n\n");
                 }
+            } else if (acao == 5) {
+                lerCombates("combates.txt");
             }
         } while (acao != 4);
 
         combate(&jogador, &inimigo);
         turno++;
-        combate(&jogador, &inimigo);
-        //mostrarTime(jogador);
-
     }
 
-    
     return 0;
 }

@@ -1,4 +1,4 @@
-/*Aqui está definido a estrutura dos personagens e do jogador */
+/*Aqui está definido a estrutura dos personagens */
 
 #ifndef PERSONAGENS_H
 #define PERSONAGENS_H
