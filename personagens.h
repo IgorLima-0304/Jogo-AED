@@ -1,4 +1,4 @@
-/*Aqui está definido a estrutura dos personagens */
+/*Aqui está definido a estrutura dos personagens e do jogador */
 
 #ifndef PERSONAGENS_H
 #define PERSONAGENS_H
@@ -30,7 +30,7 @@ typedef struct {
 
 typedef struct {
   Personagens equipe[MAX_EQUIPE];
-  int vida;
+  int vidaj;
   int ouro;
   int trofeus;
 } Jogador;
@@ -109,7 +109,7 @@ int alturaPilha(tp_pilha *p) { return p->topo + 1; }
     case 0:
       strcpy(personagem[i].nome, "Elefante");
       personagem[i].vida = 10;
-      personagem[i].ataque = 9;
+      personagem[i].ataque = 4;
       break;
     case 1:
       strcpy(personagem[i].nome, "Gorila");
@@ -128,58 +128,58 @@ int alturaPilha(tp_pilha *p) { return p->topo + 1; }
       break;
     case 4:
       strcpy(personagem[i].nome, "Leão");
-      personagem[i].vida = 8;
-      personagem[i].ataque = 9;
+      personagem[i].vida = 6;
+      personagem[i].ataque = 4;
       break;
     case 5:
       strcpy(personagem[i].nome, "Tigre");
-      personagem[i].vida = 7;
-      personagem[i].ataque = 9;
+      personagem[i].vida = 5;
+      personagem[i].ataque = 3;
       break;
     case 6:
       strcpy(personagem[i].nome, "Rinoceronte");
       personagem[i].vida = 9;
-      personagem[i].ataque = 7;
+      personagem[i].ataque = 3;
       break;
     case 7:
       strcpy(personagem[i].nome, "Crocodilo");
-      personagem[i].vida = 8;
-      personagem[i].ataque = 8;
+      personagem[i].vida = 5;
+      personagem[i].ataque = 3;
       break;
     case 8:
       strcpy(personagem[i].nome, "Hipopótamo");
       personagem[i].vida = 8;
-      personagem[i].ataque = 8;
+      personagem[i].ataque = 5;
       break;
     case 9:
       strcpy(personagem[i].nome, "Leopardo");
       personagem[i].vida = 6;
-      personagem[i].ataque = 7;
+      personagem[i].ataque = 2;
       break;
     case 10:
       strcpy(personagem[i].nome, "Lobo");
       personagem[i].vida = 7;
-      personagem[i].ataque = 7;
+      personagem[i].ataque = 3;
       break;
     case 11:
       strcpy(personagem[i].nome, "Hiena");
       personagem[i].vida = 6;
-      personagem[i].ataque = 6;
+      personagem[i].ataque = 2;
       break;
     case 12:
       strcpy(personagem[i].nome, "Guepardo");
       personagem[i].vida = 5;
-      personagem[i].ataque = 6;
+      personagem[i].ataque = 2;
       break;
     case 13:
       strcpy(personagem[i].nome, "Alce");
       personagem[i].vida = 7;
-      personagem[i].ataque = 6;
+      personagem[i].ataque = 2;
       break;
     case 14:
       strcpy(personagem[i].nome, "Onça");
       personagem[i].vida = 6;
-      personagem[i].ataque = 7;
+      personagem[i].ataque = 1;
       break;
     case 15:
       strcpy(personagem[i].nome, "Camelo");
@@ -189,11 +189,11 @@ int alturaPilha(tp_pilha *p) { return p->topo + 1; }
     case 16:
       strcpy(personagem[i].nome, "Leão-marinho");
       personagem[i].vida = 7;
-      personagem[i].ataque = 7;
+      personagem[i].ataque = 2;
       break;
     case 17:
       strcpy(personagem[i].nome, "Orangotango");
-      personagem[i].vida = 5;
+      personagem[i].vida = 8;
       personagem[i].ataque = 5;
       break;
     case 18:
@@ -204,12 +204,12 @@ int alturaPilha(tp_pilha *p) { return p->topo + 1; }
     case 19:
       strcpy(personagem[i].nome, "Javali");
       personagem[i].vida = 6;
-      personagem[i].ataque = 6;
+      personagem[i].ataque = 3;
       break;
     case 20:
       strcpy(personagem[i].nome, "Coelho");
       personagem[i].vida = 3;
-      personagem[i].ataque = 3;
+      personagem[i].ataque = 1;
       break;
     }
   }
@@ -221,7 +221,7 @@ int alturaPilha(tp_pilha *p) { return p->topo + 1; }
 }
 // Inventário do jogador
 void inicializarJogador(Jogador *jogador) {
-  jogador->vida = 10;
+  jogador->vidaj = 5;
   jogador->ouro = 10;
   jogador->trofeus = 0;
   for (int i = 0; i < MAX_EQUIPE; i++) {
@@ -245,15 +245,16 @@ void comprarPersonagem(Jogador *jogador, Personagens *loja, int indice){
         jogador->equipe[i] = loja[indice];
         jogador->ouro -= CUSTO_PERSONAGEM;
         loja[indice].ocupado = 0; // Marca a posição na loja como vazia
-        printf("Você comprou %s.\n", loja[indice].nome);
+        printf("Você adquiriu %s.\n", loja[indice].nome);
         return;
       }
     }
-    printf("Sua equipe está cheia.\n");
+    printf("Sua equipe está cheia.\n"); //modificar para algo legal
   } else {
-    printf("Ouro insuficiente.\n");
+    printf("Ta duro dorme.\n");
   }
 }
+
 
 void venderPersonagem(Jogador *jogador, int indice) {
   if (jogador->equipe[indice].nome[0] != '\0') {
@@ -263,7 +264,7 @@ void venderPersonagem(Jogador *jogador, int indice) {
     jogador->equipe[indice].vida = 0;
     jogador->equipe[indice].ataque = 0;
   } else {
-    printf("Não há pet para vender nessa posição.\n");
+    printf("Cabô pai.\n");
   }
 }
 
@@ -274,6 +275,14 @@ void renovarLoja(Personagens *loja, tp_pilha *pilha) {
   }
 }
 
+void mostrarTime(Jogador jogador) {
+    printf("Time do jogador:\n");
+    for (int i = 0; i < MAX_EQUIPE; i++) {
+        if (jogador.equipe[i].nome[0] != '\0') {
+            printf("%d. %s (Vida: %d, Ataque: %d)\n", i + 1, jogador.equipe[i].nome, jogador.equipe[i].vida, jogador.equipe[i].ataque);
+        }
+    }
+}
 
 
 

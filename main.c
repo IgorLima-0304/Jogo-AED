@@ -1,3 +1,9 @@
+/*AQUI ESTÁ DEFINIDO:
+combate
+empilhamento de animais
+turnos
+nome do time
+*/
 #include "personagens.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,25 +17,22 @@
 #define MAX_PERSONAGENS 21
 #define MAX_NOME_TIME 50
 
-
 void nomedoTime(char *adjetivo, char *substantivo) {
-  char *adjetivos[MAX_ADJETIVOS] = {"Baratino", "Disgramado", "Migueloso", "Boca-de-afofô", "Barril", "La ele"};
-  char *substantivos[MAX_SUBSTANTIVOS] = {"Guerreiro", "Herói", "Aventureiro", "Explorador", "Cavaleiro"};
+    char *adjetivos[MAX_ADJETIVOS] = {"Baratino", "Disgramado", "Migueloso", "Boca-de-afofô", "Barril", "La ele"};
+    char *substantivos[MAX_SUBSTANTIVOS] = {"Guerreiro", "Herói", "Aventureiro", "Explorador", "Cavaleiro"};
 
-  srand(time(NULL));
+    srand(time(NULL));
 
-  strcpy(adjetivo, adjetivos[rand() % MAX_ADJETIVOS]);
-  strcpy(substantivo, substantivos[rand() % MAX_SUBSTANTIVOS]);
+    strcpy(adjetivo, adjetivos[rand() % MAX_ADJETIVOS]);
+    strcpy(substantivo, substantivos[rand() % MAX_SUBSTANTIVOS]);
 }
 
 void digitarNomeTime(char *nomeTime) {
-  printf("Digite o nome do time: ");
-  scanf("%s", nomeTime);
+    printf("Digite o nome do time: ");
+    scanf("%s", nomeTime);
 }
 
-
 void combate(Jogador *jogador, Jogador *inimigo) {
-
     tp_fila filaJogador, filaInimigo;
     inicializaFila(&filaJogador);
     inicializaFila(&filaInimigo);
@@ -70,25 +73,26 @@ void combate(Jogador *jogador, Jogador *inimigo) {
 
         pj.vida -= pi.ataque;
         pi.vida -= pj.ataque;
-        //printf("%s (Vida: %d, Ataque: %d) vs %s (Vida: %d, Ataque: %d)\n",
-          //     pj.nome, pj.vida, pj.ataque, pi.nome, pi.vida, pi.ataque);
 
         if (pj.vida <= 0) {
             printf("%s desmaiou!\n", pj.nome);
             i++;
+        } else {
             insereFila(&filaJogador, pj);
         }
 
         if (pi.vida <= 0) {
             printf("%s desmaiou!\n", pi.nome);
             j++;
+        } else {
             insereFila(&filaInimigo, pi);
         }
     }
+
     if (i >= MAX_EQUIPE) {
         printf("Você perdeu o combate.\n");
-        jogador->vida -= 1;
-        if (jogador->vida == 0) {
+        jogador->vidaj -= 1;
+        if (jogador->vidaj == 0) {
             printf("Perdeu playboy.\n");
         }
     } else {
@@ -101,103 +105,99 @@ void combate(Jogador *jogador, Jogador *inimigo) {
 }
 
 int main() {
-  tp_pilha pilha;
-  inicializarPilha(&pilha);
-
-  char adjetivo[50];
-  char substantivo[50];
-  char nomeTime[MAX_NOME_TIME];
-
-  digitarNomeTime(nomeTime);
-  nomedoTime(adjetivo, substantivo);
-  printf("Nome do time: %s %s %s\n", nomeTime, substantivo, adjetivo);
-
-  criarAnimais(MAX_PERSONAGENS, &pilha);
-
-  tp_listad *lista = inicializa_listad();
-  Personagens loja[3];
-
-  renovarLoja(loja, &pilha);
-  for (int i = 0; i < 3; i++) {
-    insere_listad_no_fim(lista,loja[i]); 
-  }
-  Jogador jogador; 
-  inicializarJogador(&jogador);
-  int turno = 1;
-  while (jogador.vida > 0 && jogador.trofeus < 10) {
-
-  Jogador jogador;
-  inicializarJogador(&jogador);
-  Jogador inimigo;
-  inicializarJogador(&inimigo);
-  for (int i = 0; i < MAX_EQUIPE; i++) {
-    pop(&pilha, &inimigo.equipe[i]);
-  }
-
-
-
     
-  Personagens loja[3];
-  renovarLoja(loja, &pilha);
+    tp_pilha pilha;
+    inicializarPilha(&pilha);
 
+    char adjetivo[50];
+    char substantivo[50];
+    char nomeTime[MAX_NOME_TIME];
 
-  int turno = 1;
-  while (jogador.vida > 0 && jogador.trofeus < 10) {
-    printf("\n----- Turno %d -----\n", turno);
-    jogador.ouro = 10;
-    printf("Ouro do Jogador: %d\n", jogador.ouro);
-    printf("Vida do jogador: %d\n", jogador.vida);
-    printf("Troféus do jogador: %d\n\n", jogador.trofeus);
+    digitarNomeTime(nomeTime);
+    nomedoTime(adjetivo, substantivo);
+    printf("Nome do time: %s %s %s\n", nomeTime, substantivo, adjetivo);
 
-    exibirLoja(loja);
+    criarAnimais(MAX_PERSONAGENS, &pilha);
 
-    int acao;
-        do {
-          printf("\n1. Comprar pet\n2. Vender pet\n3. Renovar loja\n4. Ir para combate\nEscolha:");
-          scanf("%d", &acao);
-          if (acao == 1) {
-            int indice;
-            printf("Digite o índice do pet para comprar (1-3): ");
-            scanf("%d", &indice);
-            if (indice >= 1 && indice <= 3 && loja[indice-1].ocupado) {
-              comprarPersonagem(&jogador, loja, indice - 1);
-              printf("Ouro do Jogador: %d\n", jogador.ouro);
-            } else {
-              printf("Posição vazia.\n");
-            }
-      } else if (acao == 2) {
-        int indice;
-        printf("Digite o índice do pet para vender (1-5): ");
-        scanf("%d", &indice);
-        if (indice >= 1 && indice <= 5) {
-          venderPersonagem(&jogador, indice - 1);
-          printf("Ouro do Jogador: %d\n", jogador.ouro);
-        } else {
-          printf("Índice inválido.\n");
-        }
-      } else if (acao == 3) {
-        if (jogador.ouro >= CUSTO_RENOVAR) {
-          jogador.ouro -= CUSTO_RENOVAR;
-          renovarLoja(loja, &pilha);
-          printf("Ouro do Jogador: %d\n", jogador.ouro);
-          exibirLoja(loja);
-        } else {
-          printf("Ouro insuficiente.\n\n");
-        }
-      }
-          //TURNOS AQUI
-    } while (acao != 4);
+    tp_listad *lista = inicializa_listad();
+    Personagens loja[3];
 
+    renovarLoja(loja, &pilha);
+    for (int i = 0; i < 3; i++) {
+        insere_listad_no_fim(lista, loja[i]);
+
+    }
+
+    Jogador jogador;
+    inicializarJogador(&jogador);
+
+    int turno = 1;
+    while (jogador.vidaj > 0 && jogador.trofeus < 10) {
         Jogador inimigo;
         inicializarJogador(&inimigo);
         for (int i = 0; i < MAX_EQUIPE; i++) {
             pop(&pilha, &inimigo.equipe[i]);
         }
 
+        printf("\n----- Turno %d -----\n", turno);
+        jogador.ouro = 10;
+        printf("Ouro do Jogador: %d\n", jogador.ouro);
+        printf("Vida do jogador: %d\n", jogador.vidaj);
+        printf("Troféus do jogador: %d\n\n", jogador.trofeus);
+            printf("\nTime do jogador:\n");
+            for (int i = 0; i < MAX_EQUIPE; i++) {
+                if (jogador.equipe[i].nome[0] != '\0') {
+                    printf("%d. %s (Vida: %d, Ataque: %d)\n", i + 1, jogador.equipe[i].nome, jogador.equipe[i].vida, jogador.equipe[i].ataque);
+                }
+            }
+        
+
+
+        exibirLoja(loja);
+
+        int acao;
+        do {
+            printf("\n1. Comprar pet\n2. Vender pet\n3. Renovar loja\n4. Ir para combate\nEscolha:");
+            scanf("%d", &acao);
+            if (acao == 1) {
+                int indice;
+                printf("Digite o índice do pet para comprar (1-3): ");
+                scanf("%d", &indice);
+                if (indice >= 1 && indice <= 3 && loja[indice-1].ocupado) {
+                    comprarPersonagem(&jogador, loja, indice - 1);
+                    printf("Ouro do Jogador: %d\n", jogador.ouro);
+                } else {
+                    printf("Posição vazia.\n");
+                }
+            } else if (acao == 2) {
+                int indice;
+                printf("Digite o índice do pet para vender (1-5): ");
+                scanf("%d", &indice);
+                if (indice >= 1 && indice <= 5) {
+                    venderPersonagem(&jogador, indice - 1);
+                    printf("Ouro do Jogador: %d\n", jogador.ouro);
+                } else {
+                    printf("Índice inválido.\n");
+                }
+            } else if (acao == 3) {
+                if (jogador.ouro >= CUSTO_RENOVAR) {
+                    jogador.ouro -= CUSTO_RENOVAR;
+                    renovarLoja(loja, &pilha);
+                    printf("Ouro do Jogador: %d\n", jogador.ouro);
+                    exibirLoja(loja);
+                } else {
+                    printf("Ouro insuficiente.\n\n");
+                }
+            }
+        } while (acao != 4);
+
         combate(&jogador, &inimigo);
         turno++;
+        combate(&jogador, &inimigo);
+        //mostrarTime(jogador);
+
     }
-   
-  } 
-  }
+
     
+    return 0;
+}
